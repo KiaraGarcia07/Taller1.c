@@ -1,127 +1,97 @@
-#include <iostream>
-#include <vector>
-#include <limits>
-#include <algorithm>
+#include <stdio.h> 
+#define MAX 10 
 
-using namespace std;
-
-
-void llenarArray(int arr[], int n) {
-    cout << "Por favor, dame " << n << " numeros enteros para que podamos jugar con ellos." << endl;
-    for (int i = 0; i < n; ++i) {
-        cout << "Vamos con el numero " << i + 1 << ": ";
-        // Este bucle es para asegurarnos de que solo ingreses numeros validos.
-        while (!(cin >> arr[i])) {
-            cout << " Eso no parece un numero. Intenta de nuevo: ";
-            
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+void llenarArray(int vector[MAX], int n);
+void mostrarArray(int vector[MAX], int n);
+void selectionSort(int vect[MAX], int n);
+void insertionSort(int arre[MAX], int n);
+int main() { 
+    int vector[MAX]; 
+    int opc;  
+    char confirm;
+    do{ 
+        
+        printf("Menu:\n");
+        printf("1. Llenar array\n");
+        printf("2. Mostrar array\n");
+        printf("3. Ordenar array select Sort\n"); 
+        printf("4. Ordenar array insertion Sort\n");
+        printf("5. Salir\n"); 
+        printf("Seleccione una opcion: ");
+        scanf("%d", &opc);
+       switch(opc){ 
+            case 1: 
+                llenarArray(vector, MAX); 
+                break; 
+            case 2: 
+                mostrarArray(vector, MAX); 
+                break; 
+            case 3: 
+                selectionSort(vector, MAX); 
+                break; 
+            case 4: 
+                insertionSort(vector, MAX); 
+                break; 
+            case 5:  
+              break;
+                
         }
-    }
+    }while (opc!=5); 
+   return 0;
 }
 
-void ordenarSelectionAscendente(int arr[], int n) {
-    cout << "\n¡Mira el proceso de Selection Sort! Estamos ordenando de menor a mayor." << endl;
-    for (int i = 0; i < n - 1; ++i) {
-        // Encontramos el numero mas pequeno que queda.
-        int min_idx = i;
-        for (int j = i + 1; j < n; ++j) {
-            if (arr[j] < arr[min_idx]) {
-                min_idx = j;
+void llenarArray(int vector[MAX], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("Ingrese el valor de la posicion %d: ", i + 1);
+        scanf("%d", &vector[i]);
+        while (vector[i] < 0) {
+            printf("Valor invalido. Ingrese un valor positivo %d: ", i + 1);
+            scanf("%d", &vector[i]);
+        }
+        
+    }
+}
+void mostrarArray(int vector[MAX], int n) {
+printf("Posicion cambiada:\n");
+for (int i = 0; i < n; i++){
+ printf("%d",vector[i]);   
+
+}
+printf("\n");
+}
+
+void selectionSort(int vect[MAX], int n) {
+     for (int i = 0; i < n - 1; i++) {
+          int minIndex = i;
+          // Encontrar el mínimo en arreglo[i..n-1]
+         for (int j = i + 1; j < n; j++) {
+             if (vect[j] < vect[minIndex]) {
+                 minIndex = j;
             }
         }
-        // ponemos en su lugar
-        swap(arr[min_idx], arr[i]);
-        
-        cout << "Despues del paso " << i + 1 << " el arreglo se ve asi: ";
-        for (int k = 0; k < n; ++k) {
-            cout << arr[k] << " ";
-        }
-        cout << endl;
+         // Intercambiar el mínimo encontrado con el elemento en i
+        int temp = vect [i];
+        vect[i] = vect[minIndex];
+        vect[minIndex] = temp;
+        printf("\nintercambio %d con %d\n", vect[minIndex], vect[i]);
+        mostrarArray(vect, n);
     }
 }
-
-void ordenarInsertionDescendente(int arr[], int n) {
-    cout << "\n¡Ahora, el truco de Insertion Sort! Vamos a ordenar de mayor a menor." << endl;
-    for (int i = 1; i < n; ++i) {
-        int key = arr[i];
+void insertionSort(int arre[MAX], int n) {
+    for (int i = 1; i < n; i++) {
+        int clave = arre[i];
         int j = i - 1;
-        
-        // los numeros que son mas pequenos para hacerle espacio al que estamos ordenando.
-        while (j >= 0 && arr[j] < key) {
-            arr[j + 1] = arr[j];
+
+        //  Desplazar hacia la derecha los elementos mayores que 'clave'
+        while (j >= 0 && arre[j] > clave) {
+            arre[j + 1] = arre[j];
             j = j - 1;
         }
-        arr[j + 1] = key;
+        arre[j + 1] = clave;
 
-        cout << "Paso " << i << ": ";
-        for (int k = 0; k < n; ++k) {
-            cout << arr[k] << " ";
-        }
-        cout << endl;
+        printf("\nInsertando %d en su lugar\n", clave);
+        mostrarArray(arre, n);
     }
 }
 
-// --- ¡El menu, centro de control! ---
-void mostrarMenu(int arr[], int n) {
-    int opcion;
-    do {
-        cout << "\n--- ¿Que quieres hacer ahora? ---" << endl;
-        cout << "1. Ver mis numeros como los ingrese" << endl;
-        cout << "2. Ver la magia de Selection Sort (ascendente)" << endl;
-        cout << "3. Ver el arte de Insertion Sort (descendente)" << endl;
-        cout << "4. Ya no quiero jugar mas :(" << endl;
-        cout << "Escribe tu eleccion: ";
-        cin >> opcion;
-
-        // copia 
-        int tempArr[n];
-        copy(arr, arr + n, tempArr);
-
-        switch (opcion) {
-            case 1:
-                cout << "Tus numeros son: ";
-                for (int i = 0; i < n; ++i) {
-                    cout << arr[i] << " ";
-                }
-                cout << endl;
-                break;
-            case 2:
-                ordenarSelectionAscendente(tempArr, n);
-                cout << "¡Y asi queda al final! (Selection Sort): ";
-                for (int i = 0; i < n; ++i) {
-                    cout << tempArr[i] << " ";
-                }
-                cout << endl;
-                break;
-            case 3:
-                ordenarInsertionDescendente(tempArr, n);
-                cout << "¡Y asi queda al final! (Insertion Sort): ";
-                for (int i = 0; i < n; ++i) {
-                    cout << tempArr[i] << " ";
-                }
-                cout << endl;
-                break;
-            case 4:
-                cout << " Gracias por jugar conmigo." << endl;
-                break;
-            default:
-                cout << "Esa opcion no existe. Elige una de la lista." << endl;
-                break;
-        }
-    } while (opcion != 4);
-}
-
-// --- ¡La funcion principal! Aqui empieza todo ---
-int main() {
-    const int TAMANO = 10;
-    int arr[TAMANO];
-
-    // Primero, te pido los numeros.
-    llenarArray(arr, TAMANO);
-    // Luego, te muestro el menu para que elijas que hacer.
-    mostrarMenu(arr, TAMANO);
-
-    return 0;
-}
-//KIARA MARCELA GARCIA CAICEDO,JHON JAIRO MINA GARCES
+//Kiara Marcela Garcia Cacedo
